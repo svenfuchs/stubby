@@ -45,7 +45,7 @@ module Stubby
       end
       
       def complete
-        @complete = {}
+        @complete ||= {}
       end
       
       def store(klass, object, key)
