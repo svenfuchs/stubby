@@ -20,7 +20,7 @@ Stubby comes with a slick DSL to make it easy to describe stub setups. Basically
 there are three main statements:
 
 * `define Model &block` - defines a stub base class that camouflages as a model class
-* `instance :key`, methods - defines a concrete stub that inherits from a stub base class and will be instantiated on request
+* `instance :key, methods` - defines a concrete stub that inherits from a stub base class and will be instantiated on request
 * `scenario :key &block` - defines a code block that can be executed from your spec (e.g. in before :each blocks)
 
 Things are pretty much readable and self-explaining:
@@ -59,11 +59,11 @@ class above being defined:
     stub_sites            # returns an array with all defined stub instances
     stub_sites(:homepage) # returns an array containing the :homepage stub instance
 
-You can also use the `lookup(:site, :homepage)` method in the same way in case you
-need it.
+You can also use the `lookup(:site, :homepage)` method in the same way in case
+you need it.
 
-These accessors can be used from within the stub base class definition like 
-this:
+Also, note that you can use these accessors from within the stub base class
+definition, too:
 
     define Site do
       instance :homepage, :next => stub_site(:customer)
@@ -87,7 +87,7 @@ following helpers:
 
     define Site do
       has_many :sections, [:find, :build] => stub_section,
-                          [:paginate] => stub_sections  
+                           :paginate => stub_sections  
     end
 
 This has the expected effects. With this definition in place the following 
@@ -105,21 +105,21 @@ specify anything explicitely. I.e. that's the same as:
     define Site do
       has_many :sections, stub_sections,
                           [:find, :build] => stub_section,
-                          [:paginate] => stub_sections  
+                           :paginate => stub_sections  
     end
 
 
-If you want the sections array to return something else, though you can specify 
+If you want the sections array to contain something else you can specify
 it:
 
     define Site do
       has_many :sections, stub_sections(:root),
                           [:find, :build] => stub_section,
-                          [:paginate] => stub_sections  
+                           :paginate => stub_sections  
     end
 
-There are also the `has_one` and `belongs_to` statements which also behave in 
-the expected way:
+Finally there are also the `has_one` and `belongs_to` statements which behave 
+in the expected manner:
 
     define Site do
       has_one :api_key
