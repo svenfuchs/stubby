@@ -66,7 +66,7 @@ describe "Stubby" do
     it "creates a class Stubby::Classes::Site::Site" do
       lambda{ Stubby::Classes::Site::Site }.should_not raise_error
     end
-
+  
     it "creates a class Stubby::Classes::Section::Root" do
       lambda{ Stubby::Classes::Section::Root }.should_not raise_error
     end
@@ -75,7 +75,7 @@ describe "Stubby" do
       it "responds to :save (as inherited from its base class)" do
         Stubby::Classes::Site::Site.new.should respond_to(:save)
       end
-
+  
       it "responds to :name" do
         Stubby::Classes::Site::Site.new.should respond_to(:name)
       end
@@ -87,7 +87,7 @@ describe "Stubby" do
       it "returns the first defined stub if no key is given" do
         stub_site.name.should == 'site'
       end
-
+    
       it "returns the stub referenced by a given key" do
         stub_site(:another).name.should == 'another'
       end
@@ -98,16 +98,29 @@ describe "Stubby" do
     end
     
     describe "with a plural lookup method" do
-      it "returns a collection of all stubs when no key is given" do
-        stub_sites.should == [stub_site, stub_site(:another)]
+      it "returns an array containing all stubs when no key is given" do
+        sites = stub_sites
+        sites.size.should == 2
+        sites.should == [stub_site, stub_site(:another)]
       end
-    
-      it "returns a collection of all stubs when :all is given as a key" do
-        stub_sites(:all).should == [stub_site, stub_site(:another)]
+          
+      it "returns an array containing all stubs when :all is given as a key" do
+        sites = stub_sites(:all)
+        sites.size.should == 2
+        sites.should == [stub_site, stub_site(:another)]
       end
-    
-      it "returns a collection containing the referenced stub when a key is given" do
-        stub_sites(:another).should == [stub_site(:another)]
+          
+      it "returns an array containing the referenced stub when a key is given" do
+        sites = stub_sites(:another)
+        sites.size.should == 1
+        sites.should == [stub_site(:another)]
+      end
+      
+      it "returns an array containing all stubs even when a single stub has been looked up before" do
+        stub_site
+        sites = stub_sites(:all)
+        sites.size.should == 2
+        sites.should == [stub_site, stub_site(:another)]
       end
     end
     
@@ -125,13 +138,13 @@ describe "Stubby" do
     it "its target is an array of stub instances masquerading as a Site instance" do
       @site.sections.should == stub_sections
     end
-
+  
     it "works with rspec mock expectations" do
       @site.sections.should_receive(:foo)
       @site.sections.foo
     end
   end
-
+  
   describe "a method on a stub" do
     before :each do
       @another = stub_site(:another)
@@ -190,23 +203,3 @@ describe "Stubby" do
   end
 
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

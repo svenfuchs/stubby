@@ -20,7 +20,13 @@ module Stubby
       
       def find_all(definition, key)
         key = nil if key == :all
-        key ? [find_one(definition, key)].compact : by_class(definition.class)
+        if key
+          [find_one(definition, key)].compact
+        else
+          definition.instantiate(:all) unless complete[definition.class]
+          complete[definition.class] = true
+          by_class(definition.class)
+        end
       end
     
       def find_one(definition, key)
@@ -36,6 +42,10 @@ module Stubby
       def by_key(klass)
         @by_key ||= {}
         @by_key[klass] ||= {}
+      end
+      
+      def complete
+        @complete = {}
       end
       
       def store(klass, object, key)
