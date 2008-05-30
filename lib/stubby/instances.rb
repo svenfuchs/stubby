@@ -56,6 +56,7 @@ module Stubby
       def clear!
         @by_class = {}
         @by_key = {}
+        @complete = {}
       end
     end
   end
